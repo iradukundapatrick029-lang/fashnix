@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fashnix — Shop Fashion, Shop Smart</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* --- GENERAL --- */
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #333;
+  background: #fff;
+}
+header {
+  background: #f5f5f5;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+header h1 {
+  color: #C6202B;
+  font-weight: 600;
+}
+nav {
+  display: flex;
+  gap: 1rem;
+}
+nav a {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color .3s;
+}
+nav a:hover {
+  color: #C6202B;
+}
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+}
+.hamburger div {
+  width: 25px;
+  height: 3px;
+  background: #333;
+}
+
+/* --- HERO SECTION --- */
+.hero {
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  color: #fff;
+  padding: 6rem 1rem;
+  text-shadow: 1px 1px 3px rgba(0,0,0,.6);
+}
+.hero img {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.hero img.loaded {
+  opacity: 1;
+}
+.hero h2 {
+  font-size: 2.8rem;
+  margin-bottom: .5rem;
+  position: relative;
+  z-index: 1;
+}
+.cta {
+  display: inline-block;
+  background: #C6202B;
+  color: #fff;
+  padding: .9rem 1.8rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background .3s;
+  position: relative;
+  z-index: 1;
+}
+.cta:hover { background: #a81824; }
+
+/* --- PRODUCTS --- */
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem;
+  padding: 2rem 1rem;
+}
+.product {
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 1rem;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,.05);
+  transition: transform .3s, box-shadow .3s;
+  text-align: center;
+}
+.product:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 16px rgba(0,0,0,.1);
+}
+.product img {
+  width: 100%;
+  height: auto;
+  max-height: 220px;
+  object-fit: cover;
+  border-radius: 6px;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.product img.loaded {
+  opacity: 1;
+}
+.product h3 { margin: .6rem 0; font-size: 1.2rem; }
+.add-cart-btn {
+  background: #1E6FFF;
+  color: #fff;
+  padding: .6rem 1.2rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background .3s;
+}
+.add-cart-btn:hover { background: #1554c9; }
+
+/* --- CART --- */
+#cart {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #C6202B;
+  color: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 1000;
+}
+#cartModal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+}
+#cartContent {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+}
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: .6rem;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+  nav { display: none; flex-direction: column; }
+  nav.active { display: flex; }
+  .hamburger { display: flex; }
+  .hero h2 { font-size: 2rem; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Fashnix</h1>
+  <nav id="navLinks">
+    <a href="#products">Shop</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <div class="hamburger" id="hamburger"><div></div><div></div><div></div></div>
+</header>
+
+<section class="hero">
+  <img src="images/hero-banner.webp" alt="Fashnix Hero Banner" loading="lazy">
+  <h2>Shop Fashion, Shop Smart</h2>
+  <p>Nationwide delivery across Rwanda.</p>
+  <a href="#products" class="cta">Shop Now</a>
+</section>
+
+<section id="products" class="products"></section>
+
+<div id="cart">Cart (<span id="cartCount">0</span>)</div>
+<div id="cartModal">
+  <div id="cartContent">
+    <h3>Your Cart</h3>
+    <div id="cartItems"></div>
+    <button id="checkoutBtn" class="add-cart-btn">Order via WhatsApp</button>
+    <button id="closeCart" class="add-cart-btn" style="background:#C6202B;margin-top:10px;">Close</button>
+  </div>
+</div>
+
+<footer style="background:#f5f5f5;padding:2rem;text-align:center;">
+  &copy; 2025 Fashnix — All Rights Reserved
+</footer>
+
+<script>
+// --- NAV MENU ---
+const hamburger = document.getElementById("hamburger");
+const navLinks = document.getElementById("navLinks");
+hamburger.addEventListener("click",()=>navLinks.classList.toggle("active"));
+
+// --- DATA ---
+const productsData = [
+  {name:"Nike Air Max", price:"50,000 RWF", img:"images/nike-air-max.webp"},
+  {name:"Adidas Ultraboost", price:"55,000 RWF", img:"images/adidas-ultraboost.webp"},
+  {name:"Puma Running Shoes", price:"40,000 RWF", img:"images/puma-running-shoes.webp"},
+  {name:"Vans Old Skool", price:"39,000 RWF", img:"images/vans-old-skool.webp"},
+  {name:"Converse Chuck Taylor", price:"38,000 RWF", img:"images/converse-chuck-taylor.webp"},
+  {name:"Timberland Boots", price:"65,000 RWF", img:"images/timberland-boots.webp"},
+  {name:"Levi’s Jeans", price:"35,000 RWF", img:"images/levis-jeans.webp"},
+  {name:"Uniqlo Hoodie", price:"30,000 RWF", img:"images/uniqlo-hoodie.webp"},
+  {name:"Lacoste Polo", price:"30,000 RWF", img:"images/lacoste-polo.webp"},
+  {name:"Ray-Ban Sunglasses", price:"45,000 RWF", img:"images/rayban-sunglasses.webp"},
+  {name:"Gucci Belt", price:"50,000 RWF", img:"images/gucci-belt.webp"},
+  {name:"Casio Watch", price:"35,000 RWF", img:"images/casio-watch.webp"},
+  {name:"Michael Kors Handbag", price:"55,000 RWF", img:"images/michaelkors-handbag.webp"},
+  {name:"Nike Cap", price:"20,000 RWF", img:"images/nike-cap.webp"},
+  {name:"Tommy Hilfiger T-Shirt", price:"25,000 RWF", img:"images/tommyhilfiger-tshirt.webp"},
+  {name:"Adidas Classic Sneakers", price:"45,000 RWF", img:"images/adidas-sneakers.webp"}
+];
+
+// --- RENDER PRODUCTS ---
+const productsContainer = document.getElementById("products");
+let currentIndex = 0, perLoad = 6;
+
+function loadProducts() {
+  for(let i=currentIndex; i<currentIndex+perLoad && i<productsData.length; i++){
+    const p = productsData[i];
+    const div = document.createElement("div");
+    div.className = "product";
+    div.innerHTML = `
+      <img src="${p.img}" alt="${p.name}" loading="lazy">
+      <h3>${p.name}</h3>
+      <p><strong>${p.price}</strong></p>
+      <button class="add-cart-btn">Add to Cart</button>`;
+    div.querySelector(".add-cart-btn").addEventListener("click",()=>addToCart(p));
+    productsContainer.appendChild(div);
+  }
+  currentIndex += perLoad;
+}
+
+// --- INFINITE SCROLL ---
+window.addEventListener("scroll", ()=>{
+  if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 300){
+    loadProducts();
+  }
+});
+
+// --- IMAGE FADE-IN ---
+document.querySelectorAll("img").forEach(img=>{
+  img.addEventListener("load", ()=>img.classList.add("loaded"));
+});
+
+// --- CART ---
+const cart = [];
+function addToCart(p){
+  cart.push(p);
+  document.getElementById("cartCount").textContent = cart.length;
+}
+const cartModal = document.getElementById("cartModal");
+document.getElementById("cart").addEventListener("click",()=>{
+  const itemsDiv = document.getElementById("cartItems");
+  itemsDiv.innerHTML = cart.map((i,index)=>`<div class='cart-item'>${i.name} (${i.price}) <button onclick='removeFromCart(${index})'>x</button></div>`).join("");
+  cartModal.style.display="flex";
+});
+document.getElementById("closeCart").addEventListener("click",()=>cartModal.style.display="none");
+function removeFromCart(i){cart.splice(i,1);document.getElementById("cartCount").textContent=cart.length;}
+
+// --- CHECKOUT ---
+document.getElementById("checkoutBtn").addEventListener("click",()=>{
+  if(cart.length===0) return alert("Cart is empty");
+  let msg="Hello, I want to order:%0A";
+  cart.forEach(i=>msg+=`- ${i.name} (${i.price})%0A`);
+  window.open(`https://wa.me/25079413960?text=${msg}`,'_blank');
+});
+
+// Load initial products
+loadProducts();
+</script>
+
+</body>
+</html>
